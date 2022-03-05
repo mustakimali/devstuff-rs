@@ -9,14 +9,14 @@ cargo install devstuff
 
 ## Usage
 ```bash
-# input is piped (preferred)
-echo "" | devstuff [category] [tool name]
-
 # input is a file
 devstuff [category] [tool name] [file name]
 
 # input is a raw text
 devstuff [category] [tool name] [input] --raw
+
+# or input is piped
+echo "" | devstuff [category] [tool name]
 
 ```
 

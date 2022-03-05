@@ -156,31 +156,29 @@ fn hash(is: InputSource, algo: Algorithm, name: &str) -> anyhow::Result<()> {
 }
 
 fn for_input(is: InputSource, f: impl Fn(String) -> anyhow::Result<()>) -> anyhow::Result<()> {
-    if atty::is(atty::Stream::Stdin) {
-        if let Some(input) = is.input {
-            if is.raw {
-                return f(input);
-            }
-            let lines = std::fs::read_to_string(input.clone()).context(format!(
-                "Reading from file '{}', if this is raw input then specify --raw flag",
-                input
-            ))?;
-            return f(lines);
-        } else {
-            println!("nothing; to do here!");
-            return Err(anyhow::anyhow!(
-                "Not input source found. You can either pipe the input or specify a file or plaintext"
-            ));
+    if let Some(input) = is.input {
+        if is.raw {
+            return f(input);
         }
+        let lines = std::fs::read_to_string(input.clone()).context(format!(
+            "Reading from file '{}', if this is raw input then specify --raw flag",
+            input
+        ))?;
+        return f(lines);
     }
 
-    // prefer piped data
-    let stdin = std::io::stdin();
-    let mut lines = Vec::new();
-    for line in stdin.lock().lines() {
-        let line = line.expect("Could not read line from standard in");
-        lines.push(line);
+    if !atty::is(atty::Stream::Stdin) {
+        let stdin = std::io::stdin();
+        let mut lines = Vec::new();
+        for line in stdin.lock().lines() {
+            let line = line.expect("Could not read line from standard in");
+            lines.push(line);
+        }
+
+        return f(lines.join("\n"));
     }
 
-    f(lines.join("\n"))
+    return Err(anyhow::anyhow!(
+        "Not input source found. You can either pipe the input or specify a file or plaintext"
+    ));
 }
