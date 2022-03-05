@@ -1,9 +1,11 @@
 [package]
 name = "devstuff"
 description = "A collection of development tools"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/mustakimali/devstuff-rs"
+authors = ["Mohammad Mustakim Ali <i@mustak.im>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
